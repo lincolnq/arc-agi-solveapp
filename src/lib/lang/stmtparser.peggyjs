@@ -1,0 +1,39 @@
+// Source code to be pasted into PeggyJS (https://peggyjs.org/online.html)
+// if you need to regenerate the compiled file.
+
+// This parses individual commands line by line - just call parser.parse("foo")
+// Parses into nested arrays, e.g.:
+//   filter: shape=PIXEL        => ['apply', 'filter', Map { 'shape' => 'PIXEL' }]
+
+Stmt
+  = _ plus:"+"? _ f:(AppKw / AppPos) _ 
+      { 
+  		if (plus === "+") { 
+        	return ["applyToAll", ...f];
+        } else { return ["apply", ...f]; } 
+      }
+ 
+AppKw 
+  = id:Ident ":" kwargs:(_ KwArg)* 
+  	  { return [id, new Map(kwargs.map(function(x) { return x[1] }))]; }
+ 
+AppPos
+  = id:Ident args:(_ Expr)* 
+      { return [id, args.map(function(a) { return a[1] })]; }
+
+KwArg
+  = argname:Ident val:("=" Expr)?
+      { return [argname, val !== null ? val[1] : "yes"]; }
+
+Ident
+  = [a-zA-Z0-9_.]+ { return text(); }
+
+Ref
+  = "$" n:[0-9]+ { return text(); }
+
+Expr
+  = Ident
+  / Ref
+
+_ "whitespace"
+  = [ \t]*
