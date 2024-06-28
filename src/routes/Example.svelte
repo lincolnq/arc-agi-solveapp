@@ -5,8 +5,6 @@
     export let selectedSets: GridSelectionView = new Map();
     import Grid from './Grid.svelte';
 
-    console.log("construct example");
-
 </script>
 
 <div class="example">

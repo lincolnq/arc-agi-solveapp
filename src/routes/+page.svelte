@@ -19,8 +19,8 @@
     let program = "";
 
     onMount(async () => {
-        // load grid_data from /data/training/0a938d79.json
-        const res = await fetch('/data/training/0a938d79.json')
+        //const res = await fetch('/data/evaluation/007bbfb7.json')
+        const res = await fetch('/data/training/007bbfb7.json')
         
         problem_data = await res.json();
 
