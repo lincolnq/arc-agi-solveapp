@@ -106,6 +106,11 @@ function applyToAll(ident: Ident, args: Args, state: InterpState): InterpState {
 }
 
 function apply(ident: Ident, args: Args, state: InterpState): InterpState {
-    return (BUILTINS as any)[ident](state, args);
+    const f: ((arg0: InterpState, arg1: Args) => InterpState) = (BUILTINS as any)[ident];
+    if (f === undefined) {
+        // error!
+        throw `Error: identifier ${ident} unrecognized`;
+    }
+    return f(state, args);
 }
 

@@ -1,6 +1,8 @@
 import type { Pos, Color, GridSelection, InterpState } from '$lib/types';
 
 import { makePos, range } from '$lib/types';
+import { FILTER_NOARGS } from './builtin_filters';
+
 
 // Everything exported here is made available to the user
 
@@ -10,6 +12,7 @@ export const GRAY: Color = 5;
 // TODO
 //export const PIXEL: GridSelection = {}
 
+// New selection (either empty or of a list of cells)
 function select(cells?: Pos[]): GridSelection {
     let result: GridSelection = {children: []};
     if (cells) {
@@ -110,7 +113,21 @@ export function filter(s: InterpState, kwargs: any): InterpState {
         gs = select([...iterCells(s.grid)]);
     }
 
-    
+    // assemble our filter conditions into filter function
+    let filter_f = function(_) { return true };
+    for (let k in FILTER_NOARGS) {
+        let f = FILTER_NOARGS[k];
+        let kwarg = kwargs[k];
+        if (kwarg) {
+            filter_f = function(c) { return f(c) && filter_f(c); }
+        }
+    }
+
+    // now apply the filter to the selection
+    let newsel = select();
+    for (let subsel of gs.children) {
+
+    }
 
     return s;
 
